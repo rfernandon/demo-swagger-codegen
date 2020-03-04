@@ -1,0 +1,1 @@
+{{#returnContainer}}{{#isMapContainer}}Map<String, {{{returnType}}}>{{/isMapContainer}}{{#isListContainer}}Flux<{{{returnType}}}>{{/isListContainer}}{{/returnContainer}}{{^returnContainer}}Mono<{{{returnType}}}>{{/returnContainer}}

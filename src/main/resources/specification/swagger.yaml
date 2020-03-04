@@ -1,187 +1,199 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
-  version: 1.0.0
   title: Sample API
   description: API description in Markdown
-  termsOfService: terms
+  version: 1.0.0
+  termsOfService: http://www.minha.api.com.br/service
   contact:
-    name: MinhaAPI
+    name: Neves, Ricardo
     url: http://www.minha.api.com.br/
     email: r.fernandon@gmail.com
-  license:
-    name: MIT
-    url: http://opensource.org/licenses/MIT
-host: api.example.com
-basePath: /v1
+host: www.minha.api.com.br
+basePath: /api/v1
 schemes:
   - http
   - https
-tags:
-  - name: "Usuario"
-    description: 'Lista de endpoints disponíveis para o recurso: __usuario__'
-  - name: "Postagem"
-    description: 'Lista de endpoints disponíveis para o recurso: __postagem__'
+securityDefinitions:
+  api_basic_auth:
+    type: basic
+security:
+  - api_basic_auth: []
 consumes:
   - application/json
 produces:
   - application/json
+tags:
+  - name: "Usuario"
+    description: "Lista de endpoints disponíveis para o recurso"
+  - name: "Postagem"
+    description: "Lista de endpoints disponíveis para o recurso"
 paths:
   /usuario:
     get:
       tags:
         - "Usuario"
-      summary: 'Buscar usuários'
-      description: 'Este endpoint retorna todos os usuários cadastrados'
+      summary: "Buscar usuários"
+      description: "Este endpoint retorna todos os usuários cadastrados"
+      operationId: "usuarioGet"
+      consumes:
+        - application/json
+        - application/xml
       produces:
         - application/json
         - application/xml
       responses:
         200:
-          description: 'OK - Retorna uma lista com todos os usuários'
+          description: "OK - Retorna uma lista com todos os usuários"
           schema:
             type: array
             items:
               $ref: "#/definitions/Usuario"
         204:
-          description: 'No Content - Nenhum usuário foi encontrado'
+          description: "No Content - Nenhum usuário foi encontrado"
         500:
-          description: 'Internal Server Error - Ocorreu um erro inesperado no servidor'
+          description: "Internal Server Error - Ocorreu um erro inesperado no servidor"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
     post:
       tags:
         - "Usuario"
-      summary: 'Cadastrar usuário'
-      description: 'Este endpoint cadastra um novo usuário'
+      summary: "Cadastrar usuário"
+      description: "Este endpoint cadastra um novo usuário"
+      operationId: "usuarioPost"
       parameters:
         - in: body
           name: usuario
-          description: 'Parâmetro referente ao usuário'
+          description: "Parâmetro referente ao usuário"
           required: true
           schema:
             $ref: "#/definitions/Usuario"
       responses:
         201:
-          description: 'OK - Retorna o usuário cadastrado'
+          description: "OK - Retorna o usuário cadastrado"
           schema:
-            $ref: '#/definitions/Usuario'
+            $ref: "#/definitions/Usuario"
         400:
-          description: 'Bad Request - Requisição inválida'
+          description: "Bad Request - Requisição inválida"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
         500:
-          description: 'Internal Server Error - Ocorreu um erro inesperado no servidor'
+          description: "Internal Server Error - Ocorreu um erro inesperado no servidor"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
   /usuario/{id}:
     get:
       tags:
         - "Usuario"
-      summary: 'Buscar um usuário'
-      description: 'Este endpoint retorna o usuário que foi especificado no path da uri'
+      summary: "Buscar um usuário"
+      description: "Este endpoint retorna o usuário que foi especificado no path da uri"
+      operationId: "usuarioGetById"
       parameters:
         - in: path
           name: id
-          description: 'Parâmetro referente ao id do usuário'
+          description: "Parâmetro referente ao id do usuário"
           required: true
           type: integer
       responses:
         200:
-          description: 'OK - Retorna o usuário cadastrado'
+          description: "OK - Retorna o usuário cadastrado"
           schema:
-            $ref: '#/definitions/Usuario'
+            $ref: "#/definitions/Usuario"
         204:
-          description: 'No Content - Nenhum usuário foi encontrado'
+          description: "No Content - Nenhum usuário foi encontrado"
         500:
-          description: 'Internal Server Error - Ocorreu um erro inesperado no servidor'
+          description: "Internal Server Error - Ocorreu um erro inesperado no servidor"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
     put:
       tags:
         - "Usuario"
-      summary: 'Atualizar um usuário'
-      description: 'Este endpoint atualiza um determinado usuário cadastrado'
+      summary: "Atualizar um usuário"
+      description: "Este endpoint atualiza um determinado usuário cadastrado"
+      operationId: "usuarioPut"
       parameters:
         - in: path
           name: id
-          description: 'Parâmetro referente ao id do usuário'
+          description: "Parâmetro referente ao id do usuário"
           required: true
           type: integer
         - in: body
           name: usuario
-          description: 'Parâmetro referente ao id do usuário'
+          description: "Parâmetro referente ao id do usuário"
           required: true
           schema:
-            $ref: '#/definitions/Usuario'
+            $ref: "#/definitions/Usuario"
       responses:
         200:
-          description: 'OK - Retorna o usuário atualizado'
+          description: "OK - Retorna o usuário atualizado"
           schema:
-            $ref: '#/definitions/Usuario'
+            $ref: "#/definitions/Usuario"
         404:
-          description: 'Not Found - Usuário não localizado'
+          description: "Not Found - Usuário não localizado"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
         400:
-          description: 'Bad Request - Requisição inválida'
+          description: "Bad Request - Requisição inválida"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
         500:
-          description: 'Internal Server Error - Ocorreu um erro inesperado no servidor'
+          description: "Internal Server Error - Ocorreu um erro inesperado no servidor"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
     delete:
       tags:
         - "Usuario"
-      summary: 'Excluir um usuário'
-      description: 'Este endpoint exclui um determinado usuário cadastrado'
+      summary: "Excluir um usuário"
+      description: "Este endpoint exclui um determinado usuário cadastrado"
+      operationId: "usuarioDelete"
       parameters:
         - in: path
           name: id
-          description: 'Parâmetro referente ao id do usuário'
+          description: "Parâmetro referente ao id do usuário"
           required: true
           type: integer
       responses:
         200:
-          description: 'Retorna o status http de operação OK'
+          description: "Retorna o status http de operação OK"
         404:
-          description: 'Not Found - Usuário não localizado'
+          description: "Not Found - Usuário não localizado"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
         500:
-          description: 'Internal Server Error - Ocorreu um erro inesperado no servidor'
+          description: "Internal Server Error - Ocorreu um erro inesperado no servidor"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
   /postagem:
     post:
       tags:
         - "Postagem"
-      summary: 'Cadastrar publição'
-      description: 'Este endpoint cadastra uma nova publição'
+      summary: "Cadastrar publição"
+      description: "Este endpoint cadastra uma nova publição"
+      operationId: "postagemPost"
       parameters:
         - in: body
           name: publicacao
-          description: 'Parâmetro referente a publição'
+          description: "Parâmetro referente a publição"
           required: true
           schema:
-            $ref: "#/definitions/Postagem"
+            type: object
+            $ref: "#/definitions/Postagens"
       responses:
         201:
-          description: 'OK - Retorna a publição cadastrada'
+          description: "OK - Retorna a publição cadastrada"
           schema:
-            $ref: '#/definitions/Postagem'
+            $ref: "#/definitions/Postagens"
         400:
-          description: 'Bad Request - Requisição inválida'
+          description: "Bad Request - Requisição inválida"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
         500:
-          description: 'Internal Server Error - Ocorreu um erro inesperado no servidor'
+          description: "Internal Server Error - Ocorreu um erro inesperado no servidor"
           schema:
-            $ref: '#/definitions/ErrorDetails'
+            $ref: "#/definitions/ErrorDetails"
 definitions:
   ErrorDetails:
     type: object
-    description: 'Objeto utilizado para representar os dados da mensagem de erro'
+    description: "Objeto utilizado para representar os dados da mensagem de erro"
     required:
       - timestamp
       - statusCode
@@ -191,25 +203,25 @@ definitions:
       timestamp:
         type: string
         format: date-time
-        description: 'Data e hora em que o erro ocorreu'
+        description: "Data e hora em que o erro ocorreu"
       statusCode:
         type: integer
-        description: 'Código do status http'
+        description: "Código do status http"
       statusMessage:
         type: string
-        description: 'Mensagem do código do status http'
+        description: "Mensagem do código do status http"
       message:
         type: string
-        description: 'Mensagem gerada pela aplicação'
+        description: "Mensagem gerada pela aplicação"
       path:
         type: string
-        description: 'Path que o erro ocorreu'
+        description: "Path que o erro ocorreu"
       exception:
         type: string
-        description: 'Exception referente ao erro ocorrido'
+        description: "Exception referente ao erro ocorrido"
   Usuario:
     type: object
-    description: 'Objeto utilizado para representar os dados do usuário'
+    description: "Objeto utilizado para representar os dados do usuário"
     required:
       - nome
       - username
@@ -218,25 +230,27 @@ definitions:
     properties:
       id:
         type: integer
-        description: 'Identificador unico do usuário'
+        description: "Identificador unico do usuário"
       nome:
         type: string
-        description: 'Nome do usuário'
+        maxLength: 60
+        minLength: 5
+        description: "Nome do usuário"
       username:
         type: string
-        description: 'Username do usuário'
+        description: "Username do usuário"
       email:
         type: string
-        description: 'Email do usuário'
+        description: "Email do usuário"
       perfil:
         type: string
-        description: 'Define o perfil do usuário'
+        description: "Define o perfil do usuário"
         enum:
-          - 'ADMIN'
-          - 'VISITANTE'
-  Postagem:
+          - "ADMIN"
+          - "VISITANTE"
+  Postagens:
     type: object
-    description: 'Objeto utilizado para representar os dados da publicação'
+    description: "Objeto utilizado para representar os dados da publicação"
     required:
       - data
       - usuario
@@ -245,16 +259,16 @@ definitions:
     properties:
       id:
         type: integer
-        description: 'Identificador unica da publicação'
+        description: "Identificador unica da publicação"
       data:
         type: string
         format: date-time
-        description: 'Data e hora em que a postagem foi publicada'
+        description: "Data e hora em que a postagem foi publicada"
       titulo:
         type: string
-        description: 'Titulo da publicação'
+        description: "Titulo da publicação"
       mensagem:
         type: string
-        description: 'Mensagem da publicação'
+        description: "Mensagem da publicação"
       usuario:
-        $ref: '#/definitions/Usuario'
+        $ref: "#/definitions/Usuario"

@@ -25,18 +25,65 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- torna a API disponível em um formato de interface do usuário do Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.8.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-models</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-annotations -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.21</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-models -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.5.21</version>
+        </dependency>
+
+
+        <!-- torna a API disponível em um formato JSON. -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
 
@@ -49,40 +96,122 @@
             <plugin>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>2.4.10</version>
+                <executions>
+                    <!-- execution responsavel em gerar os models da api -->
+                    <execution>
+                        <id>generate-api-model</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <output>${project.basedir}</output>
+                            <inputSpec>${project.basedir}/src/main/resources/specification/swagger.yaml</inputSpec>
+                            <language>spring</language>
+                            <templateDirectory>templateSwaggerCodegen</templateDirectory>
+                            <generateApis>false</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>SwaggerDocumentationConfig.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <!-- se true, não irá gerar a classe: SwaggerDocumentationConfig.java -->
+                                <!-- por esse motivo separou em 2 execution -->
+                                <interfaceOnly>false</interfaceOnly>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <basePackage>br.com.rfernandon.demoswaggercodegen</basePackage>
+                                <apiPackage>br.com.rfernandon.demoswaggercodegen.api</apiPackage>
+                                <modelPackage>br.com.rfernandon.demoswaggercodegen.model</modelPackage>
+                                <configPackage>br.com.rfernandon.demoswaggercodegen.config</configPackage>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-api-interface</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <output>${project.basedir}</output>
+                            <inputSpec>${project.basedir}/src/main/resources/specification/swagger.yaml</inputSpec>
+                            <language>spring</language>
+                            <templateDirectory>templateSwaggerCodegen</templateDirectory>
+                            <generateApis>true</generateApis>
+                            <generateModels>false</generateModels>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
+                                <basePackage>br.com.rfernandon.demoswaggercodegen</basePackage>
+                                <apiPackage>br.com.rfernandon.demoswaggercodegen.api</apiPackage>
+                                <modelPackage>br.com.rfernandon.demoswaggercodegen.model</modelPackage>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            <plugin>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>2.4.8</version>
+                Com uma linguagem "spring", o parâmetro "java8" é usado para sinalizar o uso da interface padrão e para sinalizar o uso geral do Java8, por exemplo, quando a biblioteca de datas Java8 é usada. Eu resolvi configurar duas execuções do mesmo plugin. Um com configuração para gerar apenas as classes de modelo (java8 = true e dateLibrary = java8-localdatetime) e outro para gerar apenas as interfaces api (java = false e dateLibrary vazias).
                 <executions>
                     <execution>
-                        <id>generate-swagger</id>
+                        <id>generate-api-model</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+
+                            <inputSpec>${project.basedir}/src/main/resources/swagger.yaml</inputSpec>
+                            <language>spring</language>
+                            <templateDirectory>templateSwaggerCodegen</templateDirectory>
+                            <generateApis>false</generateApis>
+                            <output>${project.basedir}</output>
+                            <modelPackage>br.com.rfernandon.demoswaggercodegen.api.model</modelPackage>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <supportingFilesToGenerate>Pair.java,SwaggerDocumentationConfig.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <configPackage>br.com.rfernandon.demoswaggercodegen.config</configPackage>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <java8>false</java8>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-api-interface</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/swagger.yaml</inputSpec>
-                            <language>java</language>
+                            <language>spring</language>
+                            <templateDirectory>templateSwaggerCodegen</templateDirectory>
+                            <generateModels>false</generateModels>
                             <output>${project.basedir}</output>
-                            <modelPackage>br.com.rfernandon.demoswaggercodegen.api.model</modelPackage>
                             <apiPackage>br.com.rfernandon.demoswaggercodegen.api</apiPackage>
-
-                            <generateApis>true</generateApis>
-                            <generateApiTests>true</generateApiTests>
-                            <generateApiDocumentation>true</generateApiDocumentation>
-
-                            <generateModels>true</generateModels>
-                            <generateModelTests>true</generateModelTests>
-                            <generateModelDocumentation>true</generateModelDocumentation>
-
-                            <generateSupportingFiles>true</generateSupportingFiles>
-
+                            <modelPackage>br.com.rfernandon.demoswaggercodegen.api.model</modelPackage>
+                            <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
-                                <sourceFolder>src/main/java</sourceFolder>
+                                <configPackage>br.com.rfernandon.demoswaggercodegen.config</configPackage>
+                                <useBeanValidation>true</useBeanValidation>
                                 <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
+                                <java8>false</java8>
                             </configOptions>
-
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
-
 </project>
