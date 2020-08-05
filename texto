@@ -171,3 +171,51 @@ public void addGroupToUser() {
     assertTrue("Should contains field groups", addToSet.containsKey("groups"));
     assertEquals(groupId, addToSet.get("groups"));
 }
+
+doCallRealMethod().when(fileValidator).validateMultipartFile(any(FileDocument.class), any(MultipartFile.class));
+        doReturn(verifyPersonResponseResponseEntity).when(restTemplate).exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), Mockito.eq(DataEncryptResponse.class));
+doAnswer(CREATE_COMMAND_MOCK_OF_BUS).when(bus).exec(any());
+
+@Component
+@Slf4j
+public class ScheduledTasks {
+
+    private PurgeService purgeService;
+
+    public ScheduledTasks(PurgeService purgeService) {
+        this.purgeService = purgeService;
+    }
+
+    @Value("${scheduler.purge.quantity}")
+    private Integer purgeQuantity;
+
+    @Scheduled(cron = "${scheduler.cron.configuration}")
+    public void executePurge(){
+        log.info("Start Purge process...");
+        purgeService.purgeFiles(purgeQuantity);
+        log.info("Finish Purge process...");
+    }
+}
+
+@RunWith(SpringRunner.class)
+public class ScheduledTasksTest {
+
+    @MockBean
+    private PurgeService purgeService;
+
+    @InjectMocks
+    private ScheduledTasks scheduledTasks;
+
+    @Before
+    public void init() {
+        initMocks(this);
+        ReflectionTestUtils.setField(scheduledTasks, "purgeQuantity", 500);
+
+    }
+
+    @Test
+    public void shouldStartPurgeProcess() {
+        scheduledTasks.executePurge();
+        verify(purgeService, Mockito.times(1)).purgeFiles(500);
+    }
+}
