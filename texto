@@ -1,3 +1,13 @@
+https://www.programcreek.com/java-api-examples/index.php?api=org.springframework.data.mongodb.core.aggregation.Aggregation
+https://www.codota.com/code/java/classes/org.springframework.data.mongodb.core.aggregation.Aggregation
+https://www.thetopsites.net/article/58427144.shtml
+https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#unwind-example
+https://engineering.universe.com/mongo-aggregations-in-5-minutes-b8e1d9c274bb?gi=94a8519d33d7
+https://www.javacodegeeks.com/2016/04/data-aggregation-spring-data-mongodb-spring-boot.html
+https://www.programmersought.com/article/6916983820/
+https://www.codeproject.com/Articles/1077839/Working-with-MongoDBs-lookup-Aggregator
+
+
 @InjectMocks
 private PurchaseRepositoryImpl purchaseRepository;
 
